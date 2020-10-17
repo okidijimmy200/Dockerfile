@@ -1,0 +1,161 @@
+Lecture 1:
+Docker Image Layers
+--Docker image is made of a list of read only Layers tht make up file system differences
+-imge layets are stacked on top of each other to form a base for the containers file system
+
+--the image at the base is called the base layer
+
+--we can see the full set of layers tht create an image
+
+***************docker history busybox:1.24**************
+
+busybox contains 2 layers
+!) base layer to add a file
+2} 2 run bash
+
+---we then create a new container called writtable layer on top of the underlying stack
+--all changes written to thid writtable container like writing, deletting
+
+--multiple containers can share access to the same underlying image
+
+Lecture 2:
+Ways to Build a Docker Image
+• Commit changes made in a Docker container.
+• Write a Dockerfile.
+
+Steps
+1. Spin up a container from a base image.
+2. Install Git package in the container.
+3. Commit changes made in the container
+
+we will use debian image
+
+***docker run -it debian:jessie*********
+
+--to check the root directory structure of the system
+***********ls**********
+
+--to use git command
+
+install git in docker debian
+*********apt-get update && apt-get install -y git**********8
+
+--*******git*****
+
+Docker commit
+• Docker commit command would save the
+changes we made to the Docker container’s
+file system to a new image.
+
+********docker commit container_ID repository_name:tag***********
+
+to get the id of the container run
+************docker ps -a**************
+
+***docker commit cfc20babd622 okidijimmy/debian:1.00***********
+
+new image is created,to see it
+**********docker images*******
+
+--we can spin up a new container based on this image
+
+*******docker run -it okidijimmy/debian:1.00*********
+
+
+Lecture 3:
+Build docker images by writing Dockerfile
+--Approach 2: Writing a Dockerfile
+
+Dockerfile and Instructions
+• A Dockerfile is a text document that contains all the
+instructions users provide to assemble an image.
+• Each instruction will create a new image layer to the image.
+• Instructions specify what to do when building the image.
+
+creating a Dockerfile
+***********touch Dockerfile********************
+
+open it
+******************vi Dockerfile***********
+
+>FROM debian:jessie
+>RUN apt-get update
+>RUN apt-get install -y git
+>RUN apt-get install -y vim
+
+----then save and exit the vim editor
+
+Docker Build Context
+• Docker build command takes the path to the build context as an argument.
+• When build starts, docker client would pack all the files in the build context into a tarball then
+transfer the tarball file to the daemon.
+• By default, docker would search for the Dockerfile in the build context path.
+
+--building the docker
+*****docker build -t okidijimmy/debian .***********
+
+Chain RUN Instructions
+• Each RUN command will execute the command on the top writable layer
+of the container, then commit the container as a new image.
+• The new image is used for the next step in the Dockerfile. So each RUN
+instruction will create a new image layer.
+• It is recommended to chain the RUN instructions in the Dockerfile to
+reduce the number of image layers it creates.
+
+*********docker images*************
+to check images created
+
+Lecture 4:
+Dockerfile in-depth
+Steps
+1. Spin up a container from a base image.
+2. Install Git package in the container.
+3. Commit changes made in the container.
+
+Chain RUN Instructions
+• Each RUN command will execute the command on the top writable layer
+of the container, then commit the container as a new image.
+• The new image is used for the next step in the Dockerfile. So each RUN
+instruction will create a new image layer.
+• It is recommended to chain the RUN instructions in the Dockerfile to
+reduce the number of image layers it creates.
+
+
+--modify the vim file
+FROM debian:jessie
+RUN apt-get update && RUN apt-get install -y \
+    git \
+    vim
+rebuild the docker image
+******docker build -t okidijimmy/debian .**********
+
+--add python to the vim
+
+Sort Multi-line Arguments Alphanumerically
+• This will help you avoid duplication of packages and make the list much
+easier to update.
+
+CMD Instructions
+• CMD instruction specifies what command you want to run when the
+container starts up.
+• If we don't specify CMD instruction in the Dockerfile, Docker will use the
+default command defined in the base image.
+• The CMD instruction doesn’t run when building the image, it only runs
+when the container starts up.
+• You can specify the command in either exec form which is preferred or in
+shell form.
+
+--edit the dockerfile
+
+CMD ["echo", "hello world"]
+
+run the file again
+******docker build -t okidijimmy/debian .**********
+
+
+run the docker file
+*****docker run 8eba7887e5bf***********
+
+T-3.0
+
+

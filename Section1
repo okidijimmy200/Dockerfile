@@ -1,0 +1,190 @@
+Docker Technology for DevOps:
+Run Docker Containers:::
+--we will learn
+**conceptaul understanding of virtualization Technology, hypervisers and linux Containers
+**How docker fits in the overall virtualization tech system
+**Docker Serrver nd client arch
+**Docker terminlogies eg containers, images and rep
+**Useful commands to use with docker
+**Create image layers and docker image
+**Pro docker workflow
+**Docker file instructions
+**Push docker to dockerHub
+**Containerize app with micro-service
+**Automate our workflow
+**Docker container networks
+**Unit tests to test our app
+
+Lecture 2:
+Docker Technology::
+1)  Pre-virtualization World:
+Problem:
+-Huge cost 
+-Slow Deployment
+-Hard to migrate
+
+2) Hypervisor-based virtualization::
+we can have multiple operating system on the same machine
+hypervisor providers
+**VMware, Microsoft azure
+
+advantages:
+--cost-efficient
+--easy to scale
+
+disadvantage
+--kernel resource duplication
+--application portabiity issue
+
+3) Container-based virtualization
+--install OS on the Serrver
+in the tradtional model each app is running in its copy of the kernnel
+
+--container-based, we have one kernnel
+--this is much more efficient
+
+container-based virtualiation has abetter run time  isolattion
+
+Advantages of container-based virtualization
+• Cost-Efficient
+• Fast Deployment
+• Guaranteed Portability
+
+Lecture 3:
+DOcker Software's client Architecture::
+--Docker uses client-server arch with the daemon being the server
+--user interacts with the daemon through the client
+
+types of docker client
+--cmd
+--kitematic Docker client
+ 
+daemon does the work of running, building and distributing your docker containers
+--docker client can connect to a remote docker demon
+
+Lecture 4:
+Install Docker Toolbox 
+
+Lecture 5:
+Important Concepts of Docker Technology::
+images:
+• Images are read only templates used to create containers.
+• Images are created with the docker build command, either
+by us or by other docker users.
+• Images are composed of layers of other images.
+• Images are stored in a Docker registry.
+
+Containers::
+• If an image is a class, then a container is an instance of a
+class - a runtime object.
+• Containers are lightweight and portable encapsulations of
+an environment in which to run applications.
+• Containers are created from images. Inside a container, it
+has all the binaries and dependencies needed to run the
+application.
+
+Registries and Repositories
+• A registry is where we store our images.
+• You can host your own registry, or you can use Docker’s
+public registry which is called DockerHub.
+• Inside a registry, images are stored in repositories.
+• Docker repository is a collection of different docker images
+with the same name, that have different tags, each tag
+usually represents a different version of the image.
+
+Lecture 6:
+Run our First Hello World Docker Container
+--we will create a container from an image called busybox
+
+--to find out the images we have in our local PC, we run
+
+*******************docker images*************************
+
+image is specified by rep name nd tag.
+
+to run docker, we use docker run command wch creates the image we specified, then spin up the container and run it
+**********docker run busybox:1.24 echo "hello world"*************************************************************
+
+--this will check if busybox is locally installed on ur PC before downloading it 
+
+to display all contents from the registry of container of busybox
+*********docker run busybox:1.24 ls /*******************
+
+--to run continer in an interactive mode, we can 
+ -i flag starts an interactive container
+ -t flag creates a pseudo-TTY that attaches stdin and stdout
+
+ *****docker run -i -t busybox:1.24*********
+
+ / # ls 
+ / # touch a.txt
+ /# exit
+
+ Lecture 2:
+ Deep Dive into Docker Containers
+• running containers in detached mode
+• docker ps command
+• docker container name
+• docker inspect command
+
+
+
+                        |Run Container in Foreground     |                Run Container inBackground
+Description             -Docker run starts the process                     -Containers started in
+                        in the container and attaches                       detached mode and exit when
+                        the console to the process’s                        the root process used to run
+                        standard input, output, and                         the container exits
+                        standard error  
+
+How to specify?         -default mode                                       --d option
+
+Can the console be      No                                                  --Yes
+used for other
+commands after the
+container is started
+up?
+
+run docker in the inBackground
+**********docker run -d busybox:1.24 sleep 1000********8
+--this retruns us the docker id and it runs in the background
+
+run the docker ps command
+***********docker ps ********
+--this displays container info like image id, container name
+
+--to display all containers in the docker system
+*************docker ps -a*************
+
+--to remove the container, we use rm to remove container when the container exits
+**********docker run --rm busybox:1.24 sleep 1***********
+
+to specify the name of docker container to run
+***********docker run --name hello_world busybox:1.24**********
+
+docker inspect wch gives low level information abt a container or image
+********docker run -d busybox:1.24 sleep 100****************
+-copy the container id and run
+****docker inspect c9b119cba9e53906b1f3497f0f22fd4f823126d86ca10d0d40c759fcea60c3be**********
+
+--displays infromation in json format ie iame id, log path
+
+Lecture 4:
+Docker Port Mapping and Docker Logs
+--we will use a new docker image called Tomcat wch exectutes java page
+*******docker run -it -p 8888:8080 tomcat:8.0*******
+
+--access tom-cat server through webBrowser
+
+run the host Ip wch is docker host
+*******192.168.99.100:8888********
+
+--run container in detached mode
+CTRL + C to exit tomcat server
+
+**********docker ps -a***********  
+
+****************docker run -it -d -p 8888:8080 tomcat:8.0*****************
+-it returns the docker id and docker lofs             
+
+
+
